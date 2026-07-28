@@ -27,14 +27,19 @@ namespace Restaurant
         {
             var user = AppSession.CurrentUser;
             if (user == null) return;
-
             if (user.Role == 1)
             {
                 btnManagerAccount.Visibility = Visibility.Visible;
+                btnFoodItems.Visibility = Visibility.Visible;
+                btnDiningTables.Visibility = Visibility.Visible;
+                btnReports.Visibility = Visibility.Visible;
             }
             else
             {
                 btnManagerAccount.Visibility = Visibility.Collapsed;
+                btnFoodItems.Visibility = Visibility.Collapsed;
+                btnDiningTables.Visibility = Visibility.Collapsed;
+                btnReports.Visibility = Visibility.Collapsed;
             }
         }
 
@@ -48,10 +53,10 @@ namespace Restaurant
 
         private void btnFoodItems_Click(object sender, RoutedEventArgs e)
         {
-            this.Hide(); // Ẩn trang chủ đi
+            this.Hide();
             FoodItemWindow foodWindow = new FoodItemWindow();
             foodWindow.ShowDialog();
-            this.Show(); // Hiện lại trang chủ khi đóng cửa sổ con
+            this.Show();
         }
 
         private void btnDiningTables_Click(object sender, RoutedEventArgs e)

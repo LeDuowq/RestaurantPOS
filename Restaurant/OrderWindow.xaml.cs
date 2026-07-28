@@ -25,10 +25,6 @@ namespace WPF
             ingoutTableService = new DiningTableService();
             orderService = new OrderService();
             orderDetailService = new OrderDetailService();
-            if (currentTable.Status == 0)
-            {
-                ingoutTableService.UpdateStatus(currentTable.TableId, 1);
-            }
 
             LoadMenu();
             SetupOrder();
@@ -141,6 +137,11 @@ namespace WPF
             {
                 orderDetailService.AddFoodItem(currentOrder.OrderId, selectedFood);
                 LoadOrderDetails();
+                if (currentTable.Status == 0)
+                {
+                    ingoutTableService.UpdateStatus(currentTable.TableId, 1);
+                    currentTable.Status = 1;
+                }
             }
         }
     }
