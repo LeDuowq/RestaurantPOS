@@ -5,53 +5,114 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Restaurant"
         mc:Ignorable="d"
-        Title="Quản lý Món ăn" Height="500" Width="900" WindowStartupLocation="CenterScreen">
-    <Grid Margin="10">
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="2*"/>
-            <ColumnDefinition Width="1*"/>
-        </Grid.ColumnDefinitions>
+        Title="Quản lý Món ăn" Height="620" Width="950" WindowStartupLocation="CenterScreen">
+    <Grid Background="#F4F6F9" Margin="10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
 
-        <!-- Bên trái: DataGrid -->
-        <DataGrid x:Name="dgFoodItems" Grid.Column="0" AutoGenerateColumns="False" 
-                  SelectionChanged="dgFoodItems_SelectionChanged" IsReadOnly="True" Margin="0,0,10,0">
-            <DataGrid.Columns>
-                <DataGridTextColumn Header="Mã Món" Binding="{Binding FoodId}" Width="80"/>
-                <DataGridTextColumn Header="Tên Món Ăn" Binding="{Binding FoodName}" Width="*"/>
-                <DataGridTextColumn Header="Đơn Giá" Binding="{Binding Price}" Width="100"/>
-                <DataGridTextColumn Header="Danh Mục" Binding="{Binding Category.CategoryName}" Width="150"/>
-                <DataGridCheckBoxColumn Header="Đang bán" Binding="{Binding IsAvailable}" Width="70"/>
-            </DataGrid.Columns>
-        </DataGrid>
+        <!-- Header -->
+        <Border Grid.Row="0" Background="#2C3E50" Padding="15,10" CornerRadius="8" Margin="0,0,0,10">
+            <Grid>
+                <TextBlock Text="🍔 QUẢN LÝ THỰC ĐƠN &amp; MÓN ĂN" Foreground="White" FontSize="20" FontWeight="Bold" VerticalAlignment="Center"/>
+                <Button x:Name="btnBack" Content="⬅ Quay lại" HorizontalAlignment="Right" Width="100" Height="32" 
+                        Background="#E74C3C" Foreground="White" FontWeight="Bold" BorderThickness="0" Click="btnBack_Click">
+                    <Button.Resources>
+                        <Style TargetType="Border">
+                            <Setter Property="CornerRadius" Value="4"/>
+                        </Style>
+                    </Button.Resources>
+                </Button>
+            </Grid>
+        </Border>
 
-        <!-- Bên phải: Form nhập liệu -->
-        <StackPanel Grid.Column="1" Margin="10,0,0,0">
-            <TextBlock Text="THÔNG TIN MÓN ĂN" FontSize="18" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,0,0,20"/>
+        <!-- Main Content -->
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="2*"/>
+                <ColumnDefinition Width="1*"/>
+            </Grid.ColumnDefinitions>
 
-            <TextBlock Text="Mã món ăn:" Margin="0,5,0,5"/>
-            <TextBox x:Name="txtFoodId" IsReadOnly="True" Background="#EEEEEE" Height="30" VerticalContentAlignment="Center" Padding="5,0"/>
+            <!-- Bên trái: DataGrid -->
+            <DataGrid x:Name="dgFoodItems" Grid.Column="0" AutoGenerateColumns="False" 
+                      SelectionChanged="dgFoodItems_SelectionChanged" IsReadOnly="True" Margin="0,0,10,0"
+                      Background="White" BorderBrush="#BDC3C7" RowHeight="45" HeadersVisibility="Column">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Mã Món" Binding="{Binding FoodId}" Width="65"/>
+                    <DataGridTemplateColumn Header="Ảnh" Width="60">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <Image Source="{Binding Img}" Width="45" Height="35" Stretch="UniformToFill">
+                                    <Image.Clip>
+                                        <RectangleGeometry Rect="0,0,45,35" RadiusX="4" RadiusY="4"/>
+                                    </Image.Clip>
+                                </Image>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                    <DataGridTextColumn Header="Tên Món Ăn" Binding="{Binding FoodName}" Width="*"/>
+                    <DataGridTextColumn Header="Đơn Giá" Binding="{Binding Price, StringFormat={}{0:N0}}" Width="110"/>
+                    <DataGridTextColumn Header="Danh Mục" Binding="{Binding Category.CategoryName}" Width="120"/>
+                    <DataGridTextColumn Header="Số Lượng" Binding="{Binding Quantity}" Width="75"/>
+                    <DataGridCheckBoxColumn Header="Đang bán" Binding="{Binding IsAvailable}" Width="70"/>
+                </DataGrid.Columns>
+            </DataGrid>
 
-            <TextBlock Text="Tên món ăn:" Margin="0,15,0,5"/>
-            <TextBox x:Name="txtFoodName" Height="30" VerticalContentAlignment="Center" Padding="5,0"/>
+            <!-- Bên phải: Form nhập liệu -->
+            <Border Grid.Column="1" Background="White" Padding="15" CornerRadius="6" BorderBrush="#BDC3C7" BorderThickness="1">
+                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                    <StackPanel Orientation="Vertical">
+                        <TextBlock Text="THÔNG TIN MÓN ĂN" FontSize="16" FontWeight="Bold" Foreground="#2C3E50" HorizontalAlignment="Center" Margin="0,0,0,15"/>
 
-            <TextBlock Text="Đơn giá (VNĐ):" Margin="0,15,0,5"/>
-            <TextBox x:Name="txtPrice" Height="30" VerticalContentAlignment="Center" Padding="5,0"/>
+                        <TextBlock Text="Mã món ăn:" Margin="0,4,0,4" FontWeight="SemiBold"/>
+                        <TextBox x:Name="txtFoodId" IsReadOnly="True" Background="#EEEEEE" Height="30" VerticalContentAlignment="Center" Padding="5,0"/>
 
-            <TextBlock Text="Danh mục:" Margin="0,15,0,5"/>
-            <!-- ComboBox quan trọng: ItemsSource nạp danh sách, DisplayMemberPath hiển thị tên, SelectedValuePath lấy ID -->
-            <ComboBox x:Name="cbCategory" Height="30" VerticalContentAlignment="Center" Padding="5,0" 
-                      DisplayMemberPath="CategoryName" SelectedValuePath="CategoryId"/>
+                        <TextBlock Text="Tên món ăn:" Margin="0,8,0,4" FontWeight="SemiBold"/>
+                        <TextBox x:Name="txtFoodName" Height="30" VerticalContentAlignment="Center" Padding="5,0"/>
 
-            <CheckBox x:Name="chkIsAvailable" Content="Món ăn đang được bán" IsChecked="True" Margin="0,15,0,0" FontWeight="Bold" Foreground="Green"/>
+                        <TextBlock Text="Đơn giá (VNĐ):" Margin="0,8,0,4" FontWeight="SemiBold"/>
+                        <TextBox x:Name="txtPrice" Height="30" VerticalContentAlignment="Center" Padding="5,0"/>
 
-            <WrapPanel HorizontalAlignment="Center" Margin="0,30,0,0">
-                <Button x:Name="btnAdd" Content="Thêm" Width="70" Height="35" Margin="5" Click="btnAdd_Click"/>
-                <Button x:Name="btnUpdate" Content="Sửa" Width="70" Height="35" Margin="5" Click="btnUpdate_Click"/>
-                <Button x:Name="btnDelete" Content="Xóa" Width="70" Height="35" Margin="5" Click="btnDelete_Click"/>
-            </WrapPanel>
+                        <TextBlock Text="Số lượng tồn:" Margin="0,8,0,4" FontWeight="SemiBold"/>
+                        <TextBox x:Name="txtQuantity" Height="30" VerticalContentAlignment="Center" Padding="5,0"/>
 
-            <Button x:Name="btnClear" Content="Làm mới" Height="35" Margin="5,15,5,0" Click="btnClear_Click"/>
-            <Button x:Name="btnBack" Content="⬅ Quay lại" Height="35" Margin="5,15,5,0" Click="btnBack_Click" Background="#7F8C8D" Foreground="White" FontWeight="Bold"/>
-        </StackPanel>
+                        <Grid Margin="0,8,0,4">
+                            <TextBlock Text="Danh mục:" FontWeight="SemiBold" VerticalAlignment="Center"/>
+                            <Button x:Name="btnManageCategories" Content="📂 Quản lý danh mục" HorizontalAlignment="Right" 
+                                    Background="#16A085" Foreground="White" FontWeight="Bold" FontSize="11" Padding="6,2" Click="btnManageCategories_Click"/>
+                        </Grid>
+                        <ComboBox x:Name="cbCategory" Height="30" VerticalContentAlignment="Center" Padding="5,0" 
+                                  DisplayMemberPath="CategoryName" SelectedValuePath="CategoryId"/>
+
+                        <Grid Margin="0,8,0,4">
+                            <TextBlock Text="Hình ảnh món ăn:" FontWeight="SemiBold" VerticalAlignment="Center"/>
+                            <Button x:Name="btnSelectImage" Content="📷 Chọn ảnh" HorizontalAlignment="Right" 
+                                    Background="#3498DB" Foreground="White" FontWeight="Bold" FontSize="11" Padding="6,2" Click="btnSelectImage_Click"/>
+                        </Grid>
+                        <TextBox x:Name="txtImg" Height="30" VerticalContentAlignment="Center" Padding="5,0" Margin="0,0,0,5"/>
+
+                        <!-- Xem trước ảnh -->
+                        <Border Height="80" Width="120" HorizontalAlignment="Center" Background="#F0F0F0" BorderBrush="#BDC3C7" BorderThickness="1" CornerRadius="4" Margin="0,0,0,10">
+                            <Image x:Name="imgPreview" Stretch="UniformToFill">
+                                <Image.Clip>
+                                    <RectangleGeometry Rect="0,0,120,80" RadiusX="4" RadiusY="4"/>
+                                </Image.Clip>
+                            </Image>
+                        </Border>
+
+                        <CheckBox x:Name="chkIsAvailable" Content="Món ăn đang được bán" IsChecked="True" Margin="0,8,0,10" FontWeight="Bold" Foreground="Green"/>
+
+                        <WrapPanel HorizontalAlignment="Center" Margin="0,10,0,0">
+                            <Button x:Name="btnAdd" Content="Thêm" Width="70" Height="35" Margin="4" Click="btnAdd_Click" Background="#4CAF50" Foreground="White" FontWeight="Bold"/>
+                            <Button x:Name="btnUpdate" Content="Sửa" Width="70" Height="35" Margin="4" Click="btnUpdate_Click" Background="#FF9800" Foreground="White" FontWeight="Bold"/>
+                            <Button x:Name="btnDelete" Content="Xóa" Width="70" Height="35" Margin="4" Click="btnDelete_Click" Background="#F44336" Foreground="White" FontWeight="Bold"/>
+                        </WrapPanel>
+
+                        <Button x:Name="btnClear" Content="Làm mới" Height="35" Margin="4,15,4,0" Click="btnClear_Click" Background="#9E9E9E" Foreground="White" FontWeight="Bold"/>
+                    </StackPanel>
+                </ScrollViewer>
+            </Border>
+        </Grid>
     </Grid>
 </Window>

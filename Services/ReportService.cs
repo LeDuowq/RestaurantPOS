@@ -12,9 +12,9 @@ namespace Services
             return ReportDAO.GetRevenueReport(fromDate, toDate);
         }
 
-        public List<TopSellingFoodDTO> GetTopSellingFoods(DateTime fromDate, DateTime toDate)
+        public List<TopSellingFoodDTO> GetTopSellingFoods(DateTime fromDate, DateTime toDate, bool sortByRevenue = false)
         {
-            return ReportDAO.GetTopSellingFoods(fromDate, toDate);
+            return ReportDAO.GetTopSellingFoods(fromDate, toDate, sortByRevenue);
         }
     }
 }

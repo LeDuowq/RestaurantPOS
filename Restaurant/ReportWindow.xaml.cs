@@ -7,12 +7,14 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Windows;
+using System.Windows.Controls;
 
 namespace Restaurant
 {
     public partial class ReportWindow : Window
     {
-        private IReportService reportService = new ReportService();
+        private readonly IReportService reportService = new ReportService();
+        private readonly IOrderDetailService orderDetailService = new OrderDetailService();
 
         public ReportWindow()
         {
@@ -27,6 +29,14 @@ namespace Restaurant
         private void btnFilter_Click(object sender, RoutedEventArgs e)
         {
             LoadData();
+        }
+
+        private void cboSortOption_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (dpFromDate.SelectedDate != null && dpToDate.SelectedDate != null)
+            {
+                LoadTopSellingData();
+            }
         }
 
         private void LoadData()
@@ -46,17 +56,60 @@ namespace Restaurant
                 return;
             }
 
-            // 1. Tải dữ liệu Doanh thu
+            // 1. Tải dữ liệu Doanh thu Hóa đơn
             var revenueData = reportService.GetRevenueReport(fromDate, toDate);
             dgRevenue.ItemsSource = revenueData;
+            dgOrderDetails.ItemsSource = null; // Reset chi tiết món
 
             // Tính tổng tiền
             decimal total = revenueData.Sum(o => o.TotalPrice ?? 0);
             txtTotalRevenue.Text = total.ToString("N0") + " VNĐ";
 
-            // 2. Tải dữ liệu Top-sellers
-            var topSellingData = reportService.GetTopSellingFoods(fromDate, toDate);
-            dgTopSelling.ItemsSource = topSellingData;
+            // 2. Tải dữ liệu Thống kê Món ăn
+            LoadTopSellingData();
+        }
+
+        private void LoadTopSellingData()
+        {
+            if (dpFromDate.SelectedDate == null || dpToDate.SelectedDate == null) return;
+
+            DateTime fromDate = dpFromDate.SelectedDate.Value;
+            DateTime toDate = dpToDate.SelectedDate.Value;
+
+            bool sortByRevenue = cboSortOption?.SelectedIndex == 1;
+
+            // Lấy danh sách sắp xếp theo doanh thu để tìm Món Doanh Thu Cao Nhất
+            var topRevenueList = reportService.GetTopSellingFoods(fromDate, toDate, sortByRevenue: true);
+            if (topRevenueList != null && topRevenueList.Count > 0)
+            {
+                txtTopRevenueFood.Text = topRevenueList[0].FoodName;
+                txtTopRevenueAmount.Text = topRevenueList[0].TotalRevenue.ToString("N0") + " VNĐ";
+            }
+            else
+            {
+                txtTopRevenueFood.Text = "Chưa có dữ liệu";
+                txtTopRevenueAmount.Text = "0 VNĐ";
+            }
+
+            // Nạp dữ liệu lên DataGrid theo tiêu chí người dùng chọn
+            var foodList = reportService.GetTopSellingFoods(fromDate, toDate, sortByRevenue);
+            dgTopSelling.ItemsSource = foodList;
+        }
+
+        private void dgRevenue_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (dgRevenue.SelectedItem is Order selectedOrder)
+            {
+                try
+                {
+                    var details = orderDetailService.GetOrderDetailsDisplay(selectedOrder.OrderId);
+                    dgOrderDetails.ItemsSource = details;
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Lỗi tải chi tiết món ăn: " + ex.Message, "Lỗi", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+            }
         }
 
         private void btnExportCsv_Click(object sender, RoutedEventArgs e)
@@ -70,10 +123,8 @@ namespace Restaurant
 
                 if (sfd.ShowDialog() == true)
                 {
-                    // Hỗ trợ hiển thị Tiếng Việt có dấu khi mở bằng Excel
                     StringBuilder csv = new StringBuilder();
                     
-                    // Kiểm tra xem người dùng đang đứng ở Tab nào để xuất dữ liệu tab đó
                     if (tabMain.SelectedIndex == 0) 
                     {
                         // Tab Doanh thu
@@ -90,7 +141,7 @@ namespace Restaurant
                     }
                     else 
                     {
-                        // Tab Món bán chạy
+                        // Tab Món bán chạy & Doanh thu
                         csv.AppendLine("Ma Mon,Ten Mon An,So Luong Da Ban,Tong Tien Thu Ve");
                         var data = dgTopSelling.ItemsSource as List<TopSellingFoodDTO>;
                         if (data != null)
@@ -102,7 +153,6 @@ namespace Restaurant
                         }
                     }
 
-                    // WriteAllText với UTF8 BOM để Excel có thể đọc được tiếng Việt
                     File.WriteAllText(sfd.FileName, csv.ToString(), Encoding.UTF8);
                     MessageBox.Show("Xuất file báo cáo thành công!", "Thông báo", MessageBoxButton.OK, MessageBoxImage.Information);
                 }

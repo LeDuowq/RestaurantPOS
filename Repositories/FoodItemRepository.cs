@@ -28,5 +28,9 @@ namespace Repositories
         {
             return FoodItemDAO.ShowAllFoodItem();
         }
+        public void UpdateQuantity(int foodId, int newQuantity)
+        {
+            FoodItemDAO.UpdateQuantity(foodId, newQuantity);
+        }
     }
 }

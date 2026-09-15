@@ -5,33 +5,63 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Restaurant"
         mc:Ignorable="d"
-        Title="Category" Height="450" Width="800">
-    <Grid Margin="10">
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="2*"/>
-            <ColumnDefinition Width="1*"/>
-        </Grid.ColumnDefinitions>
-        <DataGrid x:Name="dgCategories" Grid.Column="0" AutoGenerateColumns="False"
-                  CanUserAddRows="False" Margin="0,0,10,0" SelectionChanged="dgCategories_selectionChanged">
-            <DataGrid.Columns>
-                <DataGridTextColumn Header="Ma danh muc" Binding="{Binding CategoryId}" Width="100" IsReadOnly="True"/>
-                <DataGridTextColumn Header="Ten danh muc" Binding="{Binding CategoryName}" Width="*" />
-            </DataGrid.Columns>
-        </DataGrid>
-        <StackPanel Grid.Column="1" Orientation="Vertical">
-            <TextBlock Text="THÔNG TIN DANH MỤC" FontWeight="Bold" FontSize="16" Margin="0,0,0,20"
-                       HorizontalAlignment="Center"/>
-            <TextBlock Text="Ma danh muc:" />
-            <TextBox x:Name="txtCategoryId" Height="30" Margin="0,5,0,15" IsReadOnly="True" Background="#F0F0F0"/>
-            <TextBlock Text="Ten danh muc" />
-            <TextBox x:Name="txtCategoryName" Height="30" Margin="0,5,0,20" />
-            <WrapPanel HorizontalAlignment="Center">
-                <Button x:Name="btnAdd" Content="Them" Width="70" Height="35" Margin="5" Click="btnAdd_Click"/>
-                <Button x:Name="btnUpdate" Content="Sua" Width="70" Height="35" Margin="5" Click="btnUpdate_Click"/>
-                <Button x:Name="btnDelete" Content="Xoa" Width="70" Height="35" Margin="5" Click="btnDelete_Click"/>
-            </WrapPanel>
-            <Button x:Name="btnClear" Content="Lam moi" Height="35" Margin="5,15,5,0" Click="btnClear_Click"/>
-            <Button x:Name="btnBack" Content="⬅ Quay lại" Height="35" Margin="5,15,5,0" Click="btnBack_Click" Background="#7F8C8D" Foreground="White" FontWeight="Bold"/>
-        </StackPanel>
+        Title="Quản lý Danh mục Món ăn" Height="520" Width="850" WindowStartupLocation="CenterScreen">
+    <Grid Background="#F4F6F9" Margin="10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- Header -->
+        <Border Grid.Row="0" Background="#2C3E50" Padding="15,10" CornerRadius="8" Margin="0,0,0,10">
+            <Grid>
+                <TextBlock Text="📂 QUẢN LÝ DANH MỤC MÓN ĂN" Foreground="White" FontSize="20" FontWeight="Bold" VerticalAlignment="Center"/>
+                <Button x:Name="btnBack" Content="⬅ Quay lại" HorizontalAlignment="Right" Width="100" Height="32" 
+                        Background="#E74C3C" Foreground="White" FontWeight="Bold" BorderThickness="0" Click="btnBack_Click">
+                    <Button.Resources>
+                        <Style TargetType="Border">
+                            <Setter Property="CornerRadius" Value="4"/>
+                        </Style>
+                    </Button.Resources>
+                </Button>
+            </Grid>
+        </Border>
+
+        <!-- Main Content -->
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="2*"/>
+                <ColumnDefinition Width="1*"/>
+            </Grid.ColumnDefinitions>
+            
+            <DataGrid x:Name="dgCategories" Grid.Column="0" AutoGenerateColumns="False"
+                      CanUserAddRows="False" Margin="0,0,10,0" SelectionChanged="dgCategories_selectionChanged"
+                      Background="White" BorderBrush="#BDC3C7" RowHeight="35" HeadersVisibility="Column">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Mã danh mục" Binding="{Binding CategoryId}" Width="110" IsReadOnly="True"/>
+                    <DataGridTextColumn Header="Tên danh mục" Binding="{Binding CategoryName}" Width="*" />
+                </DataGrid.Columns>
+            </DataGrid>
+
+            <Border Grid.Column="1" Background="White" Padding="15" CornerRadius="6" BorderBrush="#BDC3C7" BorderThickness="1">
+                <StackPanel Orientation="Vertical">
+                    <TextBlock Text="THÔNG TIN DANH MỤC" FontWeight="Bold" FontSize="16" Margin="0,0,0,15" Foreground="#2C3E50" HorizontalAlignment="Center"/>
+                    
+                    <TextBlock Text="Mã danh mục:" Margin="0,5,0,5" FontWeight="SemiBold"/>
+                    <TextBox x:Name="txtCategoryId" Height="30" Margin="0,0,0,15" IsReadOnly="True" Background="#F0F0F0" VerticalContentAlignment="Center" Padding="5,0"/>
+                    
+                    <TextBlock Text="Tên danh mục:" Margin="0,0,0,5" FontWeight="SemiBold"/>
+                    <TextBox x:Name="txtCategoryName" Height="30" Margin="0,0,0,20" VerticalContentAlignment="Center" Padding="5,0"/>
+                    
+                    <WrapPanel HorizontalAlignment="Center" Margin="0,10,0,0">
+                        <Button x:Name="btnAdd" Content="Thêm" Width="70" Height="35" Margin="4" Click="btnAdd_Click" Background="#4CAF50" Foreground="White" FontWeight="Bold"/>
+                        <Button x:Name="btnUpdate" Content="Sửa" Width="70" Height="35" Margin="4" Click="btnUpdate_Click" Background="#FF9800" Foreground="White" FontWeight="Bold"/>
+                        <Button x:Name="btnDelete" Content="Xóa" Width="70" Height="35" Margin="4" Click="btnDelete_Click" Background="#F44336" Foreground="White" FontWeight="Bold"/>
+                    </WrapPanel>
+                    
+                    <Button x:Name="btnClear" Content="Làm mới" Height="35" Margin="4,15,4,0" Click="btnClear_Click" Background="#9E9E9E" Foreground="White" FontWeight="Bold"/>
+                </StackPanel>
+            </Border>
+        </Grid>
     </Grid>
 </Window>

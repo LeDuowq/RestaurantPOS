@@ -1,4 +1,4 @@
-﻿using BusinessObject;
+using BusinessObject;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,8 +10,10 @@ namespace Repositories
     public interface IOrderDetailRepository
     {
         public List<OrderDetail> GetListOrderDetailByOrderId(int orderID);
-        public void AddFoodItem(int orderId, FoodItem foodItem);
+        public bool AddFoodItem(int orderId, FoodItem foodItem);
         public decimal CalculateOrderTotal(int orderId);
-
+        public void UpdateStatus(int detailId, int newStatus);
+        public List<OrderDetailDTO> GetKitchenOrderDetails();
+        public (decimal FinalTotal, List<OrderDetailDTO> InProgressItems) ProcessOrderCheckout(int orderId);
     }
 }

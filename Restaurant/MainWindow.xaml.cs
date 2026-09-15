@@ -27,14 +27,35 @@ namespace Restaurant
         {
             var user = AppSession.CurrentUser;
             if (user == null) return;
-
-            if (user.Role == 1)
+            if (user.Role == 1) // Admin
             {
                 btnManagerAccount.Visibility = Visibility.Visible;
+                btnFoodItems.Visibility = Visibility.Visible;
+                btnCategories.Visibility = Visibility.Visible;
+                btnDiningTables.Visibility = Visibility.Visible;
+                btnReports.Visibility = Visibility.Visible;
+                btnSales.Visibility = Visibility.Visible;
+                btnKitchen.Visibility = Visibility.Visible;
             }
-            else
+            else if (user.Role == 4) // Đầu bếp
             {
                 btnManagerAccount.Visibility = Visibility.Collapsed;
+                btnFoodItems.Visibility = Visibility.Collapsed;
+                btnCategories.Visibility = Visibility.Collapsed;
+                btnDiningTables.Visibility = Visibility.Collapsed;
+                btnReports.Visibility = Visibility.Collapsed;
+                btnSales.Visibility = Visibility.Collapsed;
+                btnKitchen.Visibility = Visibility.Visible;
+            }
+            else // Thu ngân (2), Phục vụ (3)
+            {
+                btnManagerAccount.Visibility = Visibility.Collapsed;
+                btnFoodItems.Visibility = Visibility.Collapsed;
+                btnCategories.Visibility = Visibility.Collapsed;
+                btnDiningTables.Visibility = Visibility.Collapsed;
+                btnReports.Visibility = Visibility.Collapsed;
+                btnSales.Visibility = Visibility.Visible;
+                btnKitchen.Visibility = Visibility.Collapsed;
             }
         }
 
@@ -46,12 +67,28 @@ namespace Restaurant
             this.Show();
         }
 
+        private void btnKitchen_Click(object sender, RoutedEventArgs e)
+        {
+            this.Hide();
+            KitchenWindow kitchenWindow = new KitchenWindow();
+            kitchenWindow.ShowDialog();
+            this.Show();
+        }
+
         private void btnFoodItems_Click(object sender, RoutedEventArgs e)
         {
-            this.Hide(); // Ẩn trang chủ đi
+            this.Hide();
             FoodItemWindow foodWindow = new FoodItemWindow();
             foodWindow.ShowDialog();
-            this.Show(); // Hiện lại trang chủ khi đóng cửa sổ con
+            this.Show();
+        }
+
+        private void btnCategories_Click(object sender, RoutedEventArgs e)
+        {
+            this.Hide();
+            CategoryWindow categoryWindow = new CategoryWindow();
+            categoryWindow.ShowDialog();
+            this.Show();
         }
 
         private void btnDiningTables_Click(object sender, RoutedEventArgs e)
@@ -72,19 +109,17 @@ namespace Restaurant
 
         private void btnManagerAccount_Click(object sender, RoutedEventArgs e)
         {
-            ManagerAccountWindow manageWindow = new ManagerAccountWindow();
-            manageWindow.Owner = this;
             this.Hide();
-            manageWindow.Show();
+            ManagerAccountWindow manageWindow = new ManagerAccountWindow();
+            manageWindow.ShowDialog();
             this.Show();
         }
 
         private void btnProfile_Click(object sender, RoutedEventArgs e)
         {
-            ProfileWindow profileWin = new ProfileWindow();
-            profileWin.Owner = this;
             this.Hide();
-            profileWin.Show();
+            ProfileWindow profileWin = new ProfileWindow();
+            profileWin.ShowDialog();
             this.Show();
         }
 
