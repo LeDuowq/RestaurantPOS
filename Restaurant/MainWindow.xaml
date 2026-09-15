@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Restaurant"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="Quản Lý Nhà Hàng (Restaurant POS)" Height="550" Width="900" WindowStartupLocation="CenterScreen">
     <Grid Margin="20">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -29,9 +29,9 @@
                 Background="#FF5722" Foreground="White" FontWeight="Bold"/>
         </StackPanel>
 
-        <TextBlock Grid.Row="0" Text="HỆ THỐNG QUẢN LÝ NHÀ HÀNG" FontSize="26" FontWeight="Bold" Foreground="#2C3E50" HorizontalAlignment="Center" Margin="0,30,0,30"/>
+        <TextBlock Grid.Row="0" Text="HỆ THỐNG QUẢN LÝ NHÀ HÀNG" FontSize="26" FontWeight="Bold" Foreground="#2C3E50" HorizontalAlignment="Center" Margin="0,25,0,25"/>
 
-        <UniformGrid Grid.Row="1" Columns="2" Rows="2" VerticalAlignment="Center" HorizontalAlignment="Center" Width="600" Height="250">
+        <UniformGrid Grid.Row="1" Columns="3" Rows="2" VerticalAlignment="Center" HorizontalAlignment="Center" Width="820" Height="300">
             <!-- Khu vực Bán hàng -->
             <Button x:Name="btnSales" Margin="10" Background="#E74C3C" Foreground="White" FontWeight="Bold" FontSize="18" Click="btnSales_Click">
                 <StackPanel>
@@ -48,6 +48,14 @@
                 </StackPanel>
             </Button>
 
+            <!-- Khu vực Quản lý Danh mục Món ăn -->
+            <Button x:Name="btnCategories" Margin="10" Background="#16A085" Foreground="White" FontWeight="Bold" FontSize="18" Click="btnCategories_Click">
+                <StackPanel>
+                    <TextBlock Text="📂" FontSize="30" HorizontalAlignment="Center"/>
+                    <TextBlock Text="QUẢN LÝ DANH MỤC" HorizontalAlignment="Center" Margin="0,5,0,0"/>
+                </StackPanel>
+            </Button>
+
             <!-- Khu vực Quản lý Bàn ăn -->
             <Button x:Name="btnDiningTables" Margin="10" Background="#9B59B6" Foreground="White" FontWeight="Bold" FontSize="18" Click="btnDiningTables_Click">
                 <StackPanel>
@@ -61,6 +69,14 @@
                 <StackPanel>
                     <TextBlock Text="📈" FontSize="30" HorizontalAlignment="Center"/>
                     <TextBlock Text="THỐNG KÊ DOANH THU" HorizontalAlignment="Center" Margin="0,5,0,0"/>
+                </StackPanel>
+            </Button>
+
+            <!-- Khu vực Điều phối Bếp (Dành cho Đầu bếp & Admin) -->
+            <Button x:Name="btnKitchen" Margin="10" Background="#E67E22" Foreground="White" FontWeight="Bold" FontSize="18" Click="btnKitchen_Click">
+                <StackPanel>
+                    <TextBlock Text="👨‍🍳" FontSize="30" HorizontalAlignment="Center"/>
+                    <TextBlock Text="MÀN HÌNH BẾP" HorizontalAlignment="Center" Margin="0,5,0,0"/>
                 </StackPanel>
             </Button>
         </UniformGrid>

@@ -52,6 +52,7 @@ CREATE TABLE FoodItem (
     FoodName NVARCHAR(100) NOT NULL,
     Price DECIMAL(18,0) NOT NULL,    -- Dùng DECIMAL để lưu tiền Việt (VND)
     CategoryID INT NOT NULL,
+    Quantity INT NOT NULL DEFAULT 50, -- (Mới) Số lượng suất ăn sẵn có/tồn kho
     Img NVARCHAR(MAX) NULL,          -- (Mới thêm) Lưu đường dẫn/tên ảnh của món ăn
     IsAvailable BIT NOT NULL DEFAULT 1, -- (Mới thêm cho Module 2) Trạng thái còn/hết hàng
     CONSTRAINT FK_Food_Category FOREIGN KEY (CategoryID) REFERENCES Category(CategoryID)
@@ -80,6 +81,7 @@ CREATE TABLE OrderDetail (
     FoodID INT NOT NULL,
     Quantity INT NOT NULL DEFAULT 1,
     UnitPrice DECIMAL(18,0) NOT NULL, -- Lưu giá tiền tại thời điểm gọi món
+    Status INT NOT NULL DEFAULT 0,   -- (Mới) Trạng thái chế biến: 0: Chờ chế biến, 1: Đang chế biến, 2: Hoàn thành
     Notes NVARCHAR(255) NULL,         -- (Mới thêm) Ghi chú món (VD: ít đá, nhiều cay)
     CONSTRAINT FK_Detail_Order FOREIGN KEY (OrderID) REFERENCES Orders(OrderID),
     CONSTRAINT FK_Detail_Food FOREIGN KEY (FoodID) REFERENCES FoodItem(FoodID)

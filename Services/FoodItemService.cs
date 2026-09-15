@@ -42,5 +42,9 @@ namespace Services
         {
             return repository.ShowAllFoodItem();
         }
+        public void UpdateQuantity(int foodId, int newQuantity)
+        {
+            repository.UpdateQuantity(foodId, newQuantity);
+        }
     }
 }

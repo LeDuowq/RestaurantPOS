@@ -13,7 +13,6 @@ namespace DataAccessLayer
         public static List<FoodItem> GetFoodItems()
         {
             using var context = new RestaurantPosContext();
-            // Include Category Ä‘á»ƒ load cáº£ thÃ´ng tin tÃªn danh má»¥c hiá»ƒn thá»‹ lÃªn DataGrid
             return context.FoodItems.Include(f => f.Category).ToList();
         }
 
@@ -40,6 +39,18 @@ namespace DataAccessLayer
                 existingFood.Price = foodItem.Price;
                 existingFood.CategoryId = foodItem.CategoryId;
                 existingFood.IsAvailable = foodItem.IsAvailable;
+                existingFood.Quantity = foodItem.Quantity;
+                context.SaveChanges();
+            }
+        }
+
+        public static void UpdateQuantity(int foodId, int newQuantity)
+        {
+            using var context = new RestaurantPosContext();
+            var existingFood = context.FoodItems.FirstOrDefault(f => f.FoodId == foodId);
+            if (existingFood != null)
+            {
+                existingFood.Quantity = newQuantity;
                 context.SaveChanges();
             }
         }
@@ -57,7 +68,7 @@ namespace DataAccessLayer
         public static List<FoodItem> ShowAllFoodItem()
         {
             using var db = new RestaurantPosContext();
-            return db.FoodItems.ToList();
+            return db.FoodItems.Where(a=>a.IsAvailable).ToList();
         }
         public static List<FoodItem> FilterFoodIitem(int categoryId)
         {

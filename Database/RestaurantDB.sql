@@ -1,4 +1,4 @@
-﻿-- 1. Tạo Database
+-- 1. Tạo Database
 CREATE DATABASE RestaurantPOS;
 GO
 
@@ -36,6 +36,9 @@ CREATE TABLE FoodItem (
     FoodName NVARCHAR(100) NOT NULL,
     Price DECIMAL(18,0) NOT NULL,    -- Dùng DECIMAL để lưu tiền Việt (VND)
     CategoryID INT NOT NULL,
+    Quantity INT NOT NULL DEFAULT 50, -- Số lượng suất ăn khả dụng
+    Img NVARCHAR(MAX) NULL,
+    IsAvailable BIT NOT NULL DEFAULT 1,
     CONSTRAINT FK_Food_Category FOREIGN KEY (CategoryID) REFERENCES Category(CategoryID)
 );
 GO
@@ -47,7 +50,9 @@ CREATE TABLE Orders (
     TableID INT NOT NULL,
     AccountID INT NOT NULL,          -- Nhân viên nào lập hóa đơn này
     OrderDate DATETIME NOT NULL DEFAULT GETDATE(),
+    CheckoutDate DATETIME NULL,
     TotalPrice DECIMAL(18,0) DEFAULT 0,
+    Discount DECIMAL(18,0) NOT NULL DEFAULT 0,
     Status INT NOT NULL DEFAULT 0,   -- 0: Chưa thanh toán, 1: Đã thanh toán
     CONSTRAINT FK_Order_Table FOREIGN KEY (TableID) REFERENCES DiningTable(TableID),
     CONSTRAINT FK_Order_Account FOREIGN KEY (AccountID) REFERENCES Account(AccountID)
@@ -61,6 +66,8 @@ CREATE TABLE OrderDetail (
     FoodID INT NOT NULL,
     Quantity INT NOT NULL DEFAULT 1,
     UnitPrice DECIMAL(18,0) NOT NULL, -- Lưu giá tiền tại thời điểm gọi món (phòng trường hợp sau này món ăn tăng giá)
+    Status INT NOT NULL DEFAULT 0,   -- 0: Chờ chế biến, 1: Đang chế biến, 2: Hoàn thành
+    Notes NVARCHAR(255) NULL,
     CONSTRAINT FK_Detail_Order FOREIGN KEY (OrderID) REFERENCES Orders(OrderID),
     CONSTRAINT FK_Detail_Food FOREIGN KEY (FoodID) REFERENCES FoodItem(FoodID)
 );
@@ -77,10 +84,10 @@ INSERT INTO [dbo].[Role] ([RoleID], [RoleName])
 VALUES 
 (1, N'Quản lí'), 
 (2, N'Nhân viên Thu ngân'), 
-(3, N'Nhân viên Phục vụ');
+(3, N'Nhân viên Phục vụ'),
+(4, N'Đầu bếp');
 
 -- 3. Nối Khóa ngoại từ bảng Account sang bảng Role
--- (Do bảng Account của mày đang dùng cột tên là [Role] để lưu ID)
 ALTER TABLE [dbo].[Account] 
 ADD CONSTRAINT FK_Account_Role FOREIGN KEY ([Role]) REFERENCES [dbo].[Role]([RoleID]);
 
@@ -89,6 +96,24 @@ ALTER TABLE [dbo].[Account]
 ADD [Email] NVARCHAR(100) NULL;
 
 -- Thêm cột Status để quản lý nhân viên còn làm hay đã nghỉ (1 là đang làm, 0 là đã nghỉ)
--- Nếu mày có cột này rồi thì bỏ qua 2 dòng dưới nhé
 ALTER TABLE [dbo].[Account]
 ADD [Status] INT NOT NULL DEFAULT 1;
+
+-- Lệnh cập nhật cho Database đã tồn tại
+IF NOT EXISTS (SELECT * FROM sys.columns WHERE object_id = OBJECT_ID(N'[dbo].[FoodItem]') AND name = 'Quantity')
+BEGIN
+    ALTER TABLE [dbo].[FoodItem] ADD [Quantity] INT NOT NULL DEFAULT 50;
+END
+GO
+
+IF NOT EXISTS (SELECT * FROM sys.columns WHERE object_id = OBJECT_ID(N'[dbo].[OrderDetail]') AND name = 'Status')
+BEGIN
+    ALTER TABLE [dbo].[OrderDetail] ADD [Status] INT NOT NULL DEFAULT 0;
+END
+GO
+
+IF NOT EXISTS (SELECT * FROM [dbo].[Role] WHERE [RoleID] = 4)
+BEGIN
+    INSERT INTO [dbo].[Role] ([RoleID], [RoleName]) VALUES (4, N'Đầu bếp');
+END
+GO

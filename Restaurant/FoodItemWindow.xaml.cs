@@ -1,9 +1,12 @@
 using BusinessObject;
+using Microsoft.Win32;
 using Services;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media.Imaging;
 
 namespace Restaurant
 {
@@ -39,11 +42,19 @@ namespace Restaurant
 
             try
             {
+                int quantity = 0;
+                if (!string.IsNullOrWhiteSpace(txtQuantity.Text))
+                {
+                    int.TryParse(txtQuantity.Text, out quantity);
+                }
+
                 FoodItem newItem = new FoodItem
                 {
                     FoodName = txtFoodName.Text,
                     Price = decimal.Parse(txtPrice.Text),
+                    Quantity = quantity,
                     CategoryId = (int)cbCategory.SelectedValue,
+                    Img = string.IsNullOrWhiteSpace(txtImg.Text) ? null : txtImg.Text.Trim(),
                     IsAvailable = chkIsAvailable.IsChecked ?? true
                 };
 
@@ -54,7 +65,7 @@ namespace Restaurant
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Lỗi: Giá tiền phải là số hợp lệ. " + ex.Message, "Lỗi");
+                MessageBox.Show("Lỗi: Giá tiền và số lượng phải là số hợp lệ. " + ex.Message, "Lỗi");
             }
         }
 
@@ -68,12 +79,20 @@ namespace Restaurant
 
             try
             {
+                int quantity = 0;
+                if (!string.IsNullOrWhiteSpace(txtQuantity.Text))
+                {
+                    int.TryParse(txtQuantity.Text, out quantity);
+                }
+
                 FoodItem updateItem = new FoodItem
                 {
                     FoodId = int.Parse(txtFoodId.Text),
                     FoodName = txtFoodName.Text,
                     Price = decimal.Parse(txtPrice.Text),
+                    Quantity = quantity,
                     CategoryId = (int)cbCategory.SelectedValue,
+                    Img = string.IsNullOrWhiteSpace(txtImg.Text) ? null : txtImg.Text.Trim(),
                     IsAvailable = chkIsAvailable.IsChecked ?? true
                 };
 
@@ -83,7 +102,7 @@ namespace Restaurant
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Lỗi: Giá tiền phải là số hợp lệ. " + ex.Message, "Lỗi");
+                MessageBox.Show("Lỗi: Giá tiền và số lượng phải là số hợp lệ. " + ex.Message, "Lỗi");
             }
         }
 
@@ -105,14 +124,60 @@ namespace Restaurant
             }
         }
 
-        private void btnClear_Click(object sender, RoutedEventArgs e)
+        private void btnClear_Click(object? sender, RoutedEventArgs? e)
         {
             txtFoodId.Clear();
             txtFoodName.Clear();
             txtPrice.Clear();
+            txtQuantity.Clear();
+            txtImg.Clear();
+            imgPreview.Source = null;
             cbCategory.SelectedItem = null;
             chkIsAvailable.IsChecked = true; // Trả về mặc định
             dgFoodItems.SelectedItem = null;
+        }
+
+        private void btnSelectImage_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                OpenFileDialog dialog = new OpenFileDialog();
+                dialog.Filter = "Image Files (*.png;*.jpg;*.jpeg;*.webp)|*.png;*.jpg;*.jpeg;*.webp|All Files (*.*)|*.*";
+                dialog.Title = "Chọn hình ảnh món ăn";
+
+                if (dialog.ShowDialog() == true)
+                {
+                    string sourceFilePath = dialog.FileName;
+                    string fileName = Path.GetFileName(sourceFilePath);
+                    string imagesFolder = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Images");
+
+                    if (!Directory.Exists(imagesFolder))
+                    {
+                        Directory.CreateDirectory(imagesFolder);
+                    }
+
+                    string destFilePath = Path.Combine(imagesFolder, fileName);
+                    if (!File.Exists(destFilePath))
+                    {
+                        File.Copy(sourceFilePath, destFilePath, true);
+                    }
+
+                    string relativePath = $"/Images/{fileName}";
+                    txtImg.Text = relativePath;
+                    imgPreview.Source = new BitmapImage(new Uri(destFilePath, UriKind.Absolute));
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Lỗi chọn ảnh: " + ex.Message, "Lỗi", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        private void btnManageCategories_Click(object sender, RoutedEventArgs e)
+        {
+            CategoryWindow catWin = new CategoryWindow();
+            catWin.ShowDialog();
+            LoadCategories();
         }
 
         private void btnBack_Click(object sender, RoutedEventArgs e)
@@ -127,8 +192,26 @@ namespace Restaurant
                 txtFoodId.Text = selectedItem.FoodId.ToString();
                 txtFoodName.Text = selectedItem.FoodName;
                 txtPrice.Text = selectedItem.Price.ToString("0.##"); // Bỏ số 0 vô nghĩa ở đuôi
+                txtQuantity.Text = selectedItem.Quantity.ToString();
+                txtImg.Text = selectedItem.Img ?? "";
                 cbCategory.SelectedValue = selectedItem.CategoryId; // Tự động chọn đúng Danh mục trên ComboBox
                 chkIsAvailable.IsChecked = selectedItem.IsAvailable;
+
+                if (!string.IsNullOrWhiteSpace(selectedItem.Img))
+                {
+                    try
+                    {
+                        imgPreview.Source = new BitmapImage(new Uri(selectedItem.Img, UriKind.RelativeOrAbsolute));
+                    }
+                    catch
+                    {
+                        imgPreview.Source = null;
+                    }
+                }
+                else
+                {
+                    imgPreview.Source = null;
+                }
             }
         }
     }

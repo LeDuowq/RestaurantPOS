@@ -16,6 +16,8 @@ public partial class FoodItem
 
     public bool IsAvailable { get; set; } = true;
 
+    public int Quantity { get; set; } = 0;
+
     public string? Img {  get; set; }
 
 

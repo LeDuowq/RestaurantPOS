@@ -13,5 +13,6 @@ namespace Repositories
         List<FoodItem> FilterFoodItem(int categoryId);
         FoodItem GetFoodById(int foodID);
         List<FoodItem> ShowAllFoodItem();
+        void UpdateQuantity(int foodId, int newQuantity);
     }
 }

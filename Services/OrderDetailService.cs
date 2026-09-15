@@ -1,4 +1,4 @@
-﻿using BusinessObject;
+using BusinessObject;
 using Repositories;
 using System;
 using System.Collections.Generic;
@@ -17,9 +17,9 @@ namespace Services
             orderDetailRepository = new OrderDetailRepository();
             foodItemRepository = new FoodItemRepository();
         }
-        public void AddFoodItem(int orderId, FoodItem foodItem)
+        public bool AddFoodItem(int orderId, FoodItem foodItem)
         {
-            orderDetailRepository.AddFoodItem(orderId, foodItem);
+            return orderDetailRepository.AddFoodItem(orderId, foodItem);
         }
 
         public decimal CalculateOrderTotal(int orderId)
@@ -31,16 +31,35 @@ namespace Services
         {
             return orderDetailRepository.GetListOrderDetailByOrderId(orderID);
         }
+
         public List<OrderDetailDTO> GetOrderDetailsDisplay(int orderId)
         {
             var details = orderDetailRepository.GetListOrderDetailByOrderId(orderId);
             return details.Select(d => new OrderDetailDTO
             {
+                DetailId = d.DetailId,
+                OrderId = d.OrderId,
                 FoodName = foodItemRepository.GetFoodById(d.FoodId)?.FoodName ?? "Không xác định",
                 Quantity = d.Quantity,
                 UnitPrice = d.UnitPrice,
-                TotalPrice = d.Quantity * d.UnitPrice
+                TotalPrice = d.Quantity * d.UnitPrice,
+                Status = d.Status
             }).ToList();
+        }
+
+        public void UpdateStatus(int detailId, int newStatus)
+        {
+            orderDetailRepository.UpdateStatus(detailId, newStatus);
+        }
+
+        public List<OrderDetailDTO> GetKitchenOrderDetails()
+        {
+            return orderDetailRepository.GetKitchenOrderDetails();
+        }
+
+        public (decimal FinalTotal, List<OrderDetailDTO> InProgressItems) ProcessOrderCheckout(int orderId)
+        {
+            return orderDetailRepository.ProcessOrderCheckout(orderId);
         }
     }
 }

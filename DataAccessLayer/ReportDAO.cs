@@ -25,8 +25,8 @@ namespace DataAccessLayer
                 .ToList();
         }
 
-        // 2. Hàm thống kê Món bán chạy nhất
-        public static List<TopSellingFoodDTO> GetTopSellingFoods(DateTime fromDate, DateTime toDate)
+        // 2. Hàm thống kê Món bán chạy / Doanh thu cao nhất
+        public static List<TopSellingFoodDTO> GetTopSellingFoods(DateTime fromDate, DateTime toDate, bool sortByRevenue = false)
         {
             using var context = new RestaurantPosContext();
 
@@ -47,7 +47,10 @@ namespace DataAccessLayer
                             TotalRevenue = g.Sum(x => x.Quantity * x.UnitPrice)
                         };
 
-            // Sắp xếp theo số lượng bán giảm dần
+            if (sortByRevenue)
+            {
+                return query.OrderByDescending(x => x.TotalRevenue).ToList();
+            }
             return query.OrderByDescending(x => x.TotalQuantitySold).ToList();
         }
     }

@@ -13,5 +13,6 @@ namespace Services
         List<FoodItem> ShowAllFoodItem();
         List<FoodItem> FilterFoodIitem(int categoryId);
         FoodItem GetFoodById(int foodID);
+        void UpdateQuantity(int foodId, int newQuantity);
     }
 }

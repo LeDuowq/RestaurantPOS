@@ -88,6 +88,7 @@ public partial class RestaurantPosContext : DbContext
             entity.Property(e => e.CategoryId).HasColumnName("CategoryID");
             entity.Property(e => e.FoodName).HasMaxLength(100);
             entity.Property(e => e.Price).HasColumnType("decimal(18, 0)");
+            entity.Property(e => e.Quantity).HasDefaultValue(0);
 
             entity.HasOne(d => d.Category).WithMany(p => p.FoodItems)
                 .HasForeignKey(d => d.CategoryId)
@@ -131,6 +132,7 @@ public partial class RestaurantPosContext : DbContext
             entity.Property(e => e.OrderId).HasColumnName("OrderID");
             entity.Property(e => e.Quantity).HasDefaultValue(1);
             entity.Property(e => e.UnitPrice).HasColumnType("decimal(18, 0)");
+            entity.Property(e => e.Status).HasDefaultValue(0);
 
             entity.HasOne(d => d.Food).WithMany(p => p.OrderDetails)
                 .HasForeignKey(d => d.FoodId)

@@ -1,0 +1,126 @@
+<Window x:Class="Restaurant.KitchenWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Restaurant"
+        mc:Ignorable="d"
+        Title="Màn Hình Nhà Bếp (Kitchen Manager)" Height="650" Width="1050"
+        WindowStartupLocation="CenterScreen">
+    <Grid Background="#F4F6F9" Margin="10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- Header -->
+        <Border Grid.Row="0" Background="#2C3E50" Padding="15,10" CornerRadius="8" Margin="0,0,0,10">
+            <Grid>
+                <TextBlock Text="👨‍🍳 ĐIỀU PHỐI &amp; QUẢN LÝ NHÀ BẾP" Foreground="White" FontSize="20" FontWeight="Bold" VerticalAlignment="Center"/>
+                <Button x:Name="btnBack" Content="⬅ Quay lại" HorizontalAlignment="Right" Width="100" Height="32" 
+                        Background="#E74C3C" Foreground="White" FontWeight="Bold" BorderThickness="0" Click="btnBack_Click">
+                    <Button.Resources>
+                        <Style TargetType="Border">
+                            <Setter Property="CornerRadius" Value="4"/>
+                        </Style>
+                    </Button.Resources>
+                </Button>
+            </Grid>
+        </Border>
+
+        <!-- Main Tab Content -->
+        <TabControl Grid.Row="1" Background="White" BorderBrush="#BDC3C7">
+            <!-- TAB 1: DANH SÁCH MÓN CẦN CHẾ BIẾN -->
+            <TabItem Header="📋 Món Cần Chế Biến" FontSize="15" FontWeight="Bold">
+                <Grid Margin="15">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <StackPanel Orientation="Horizontal" Grid.Row="0" Margin="0,0,0,10">
+                        <TextBlock Text="Danh sách các món ăn bồi bàn đã gọi:" FontSize="16" FontWeight="SemiBold" VerticalAlignment="Center"/>
+                        <Button x:Name="btnRefreshKitchen" Content="🔄 Tải lại" Width="100" Height="30" Margin="15,0,0,0" 
+                                Background="#3498DB" Foreground="White" FontWeight="Bold" Click="btnRefreshKitchen_Click"/>
+                    </StackPanel>
+
+                    <DataGrid x:Name="dgPendingOrders" Grid.Row="1" AutoGenerateColumns="False" IsReadOnly="True" 
+                              Background="White" BorderBrush="#BDC3C7" RowHeight="40" HeadersVisibility="Column">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Mã Chi Tiết" Binding="{Binding DetailId}" Width="90"/>
+                            <DataGridTextColumn Header="Bàn" Binding="{Binding TableName}" Width="100" FontWeight="Bold"/>
+                            <DataGridTextColumn Header="Tên Món" Binding="{Binding FoodName}" Width="*"/>
+                            <DataGridTextColumn Header="Số Lượng" Binding="{Binding Quantity}" Width="90" FontWeight="Bold"/>
+                            <DataGridTextColumn Header="Trạng Thái" Binding="{Binding StatusText}" Width="130" Foreground="#D35400" FontWeight="Bold"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+
+                    <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,15,0,0">
+                        <Button x:Name="btnStartCook" Content="🔥 Bắt đầu chế biến" Height="40" Width="170" Margin="5,0" 
+                                Background="#F39C12" Foreground="White" FontSize="14" FontWeight="Bold" Click="btnStartCook_Click"/>
+                        <Button x:Name="btnFinishCook" Content="✅ Chế biến xong" Height="40" Width="160" Margin="5,0" 
+                                Background="#2ECC71" Foreground="White" FontSize="14" FontWeight="Bold" Click="btnFinishCook_Click"/>
+                    </StackPanel>
+                </Grid>
+            </TabItem>
+
+            <!-- TAB 2: QUẢN LÝ SUẤT ĂN KHẢ DỤNG -->
+            <TabItem Header="🥘 Quản Lý Số Lượng Suất Ăn" FontSize="15" FontWeight="Bold">
+                <Grid Margin="15">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <!-- Top Bar: Điều chỉnh 2 nút Cộng (+) và Trừ (-) cho món đang chọn -->
+                    <Border Grid.Row="0" Background="#F8F9FA" BorderBrush="#BDC3C7" BorderThickness="1" CornerRadius="6" Padding="12,10" Margin="0,0,0,10">
+                        <Grid>
+                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                <TextBlock Text="Món đang chọn: " FontSize="14" FontWeight="SemiBold" VerticalAlignment="Center"/>
+                                <TextBlock x:Name="txtSelectedFoodName" Text="(Vui lòng chọn món bên dưới)" FontSize="14" FontWeight="Bold" Foreground="#1565C0" VerticalAlignment="Center" Margin="5,0,25,0"/>
+                                
+                                <TextBlock Text="Thao tác: " FontSize="14" FontWeight="SemiBold" VerticalAlignment="Center"/>
+                                <Button x:Name="btnDecrease" Content="➖ Trừ 1 suất (Hao hụt)" Width="150" Height="34" Margin="5,0" Background="#E74C3C" Foreground="White" FontWeight="Bold" Click="btnDecrease_Click"/>
+                                <Button x:Name="btnIncrease" Content="➕ Cộng 1 suất (Nấu thêm)" Width="160" Height="34" Margin="5,0" Background="#27AE60" Foreground="White" FontWeight="Bold" Click="btnIncrease_Click"/>
+                            </StackPanel>
+                        </Grid>
+                    </Border>
+
+                    <DataGrid x:Name="dgStockItems" Grid.Row="1" AutoGenerateColumns="False" CanUserAddRows="False"
+                              Background="White" BorderBrush="#BDC3C7" RowHeight="42" HeadersVisibility="Column" SelectionChanged="dgStockItems_SelectionChanged">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Mã Món" Binding="{Binding FoodId}" Width="75" IsReadOnly="True"/>
+                            <DataGridTextColumn Header="Tên Món Ăn" Binding="{Binding FoodName}" Width="*" IsReadOnly="True"/>
+                            <DataGridTextColumn Header="Đơn Giá (đ)" Binding="{Binding Price, StringFormat={}{0:N0}}" Width="120" IsReadOnly="True"/>
+                            <DataGridTextColumn Header="Danh Mục" Binding="{Binding Category.CategoryName}" Width="130" IsReadOnly="True"/>
+                            
+                            <!-- Cột Nút Bấm Cộng (+) / Trừ (-) Số Lượng Trực Tiếp -->
+                            <DataGridTemplateColumn Header="Tăng / Giảm Số Lượng" Width="170">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                            <Button Content="➖" Click="btnDecreaseRow_Click" Tag="{Binding}" Width="36" Height="30" Background="#E74C3C" Foreground="White" FontWeight="Bold" Margin="3,0"/>
+                                            <TextBlock Text="{Binding Quantity}" Width="45" TextAlignment="Center" VerticalAlignment="Center" FontWeight="Bold" FontSize="15" Foreground="#2C3E50"/>
+                                            <Button Content="➕" Click="btnIncreaseRow_Click" Tag="{Binding}" Width="36" Height="30" Background="#27AE60" Foreground="White" FontWeight="Bold" Margin="3,0"/>
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+
+                            <DataGridCheckBoxColumn Header="Còn Bán" Binding="{Binding IsAvailable}" Width="85"/>
+                            
+                            <DataGridTemplateColumn Header="Hành Động" Width="100">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <Button Content="💾 Lưu" Click="btnSaveStock_Click" Tag="{Binding}" Background="#2980B9" Foreground="White" FontWeight="Bold" Padding="10,4"/>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </Grid>
+            </TabItem>
+        </TabControl>
+    </Grid>
+</Window>

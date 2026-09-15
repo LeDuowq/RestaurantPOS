@@ -1,4 +1,4 @@
-﻿using BusinessObject;
+using BusinessObject;
 using DataAccessLayer;
 using System;
 using System.Collections.Generic;
@@ -10,9 +10,9 @@ namespace Repositories
 {
     public class OrderDetailRepository : IOrderDetailRepository
     {
-        public void AddFoodItem(int orderId, FoodItem foodItem)
+        public bool AddFoodItem(int orderId, FoodItem foodItem)
         {
-            OrderDetailDAO.AddFoodItem(orderId,foodItem);
+            return OrderDetailDAO.AddFoodItem(orderId, foodItem);
         }
 
         public decimal CalculateOrderTotal(int orderId)
@@ -23,6 +23,21 @@ namespace Repositories
         public List<OrderDetail> GetListOrderDetailByOrderId(int orderID)
         {
            return OrderDetailDAO.GetListOrderDetailByOrderId(orderID);
+        }
+
+        public void UpdateStatus(int detailId, int newStatus)
+        {
+            OrderDetailDAO.UpdateStatus(detailId, newStatus);
+        }
+
+        public List<OrderDetailDTO> GetKitchenOrderDetails()
+        {
+            return OrderDetailDAO.GetKitchenOrderDetails();
+        }
+
+        public (decimal FinalTotal, List<OrderDetailDTO> InProgressItems) ProcessOrderCheckout(int orderId)
+        {
+            return OrderDetailDAO.ProcessOrderCheckout(orderId);
         }
     }
 }
