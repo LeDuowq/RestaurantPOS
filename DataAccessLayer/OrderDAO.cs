@@ -12,7 +12,8 @@ namespace DataAccessLayer
         public static Order GetOrder(int tableID, int status)
         {
             using var db = new RestaurantPosContext();
-            return db.Orders.FirstOrDefault(a => a.TableId == tableID && a.Status == status);
+            return db.Orders.OrderByDescending(a => a.OrderId)
+                            .FirstOrDefault(a => a.TableId == tableID && a.Status == status);
         }
         public static void AddOrder(Order order)
         {

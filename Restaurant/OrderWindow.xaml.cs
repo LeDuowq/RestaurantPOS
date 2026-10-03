@@ -99,7 +99,7 @@ namespace WPF
 
         private void SetupOrder()
         {
-            currentOrder = orderService.GetOrder(currentTable.TableId,0);
+            currentOrder = orderService.GetOrder(currentTable.TableId, 0);
 
             if (currentOrder == null)
             {
@@ -113,10 +113,8 @@ namespace WPF
                 };
                 orderService.AddOrder(currentOrder);
             }
-            else
-            {
-                LoadOrderDetails();
-            }
+
+            LoadOrderDetails();
         }
         private void LoadOrderDetails()
         {
@@ -134,29 +132,23 @@ namespace WPF
             }
             try
             {
-                var result = MessageBox.Show($"Bạn có chắc chắn muốn thanh toán hóa đơn cho {currentTable.TableName} không?", 
-                    "Xác nhận thanh toán", MessageBoxButton.YesNo, MessageBoxImage.Question);
-                
-                if (result == MessageBoxResult.Yes)
+                decimal total = orderDetailService.CalculateOrderTotal(currentOrder.OrderId);
+                if (total <= 0)
                 {
-                    var (finalTotal, inProgressItems) = orderDetailService.ProcessOrderCheckout(currentOrder.OrderId);
+                    MessageBox.Show("Bàn này chưa gọi món ăn nào, không thể thực hiện thanh toán!", "Thông báo", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    return;
+                }
 
-                    if (inProgressItems != null && inProgressItems.Count > 0)
-                    {
-                        string itemsStr = string.Join("\n", inProgressItems.Select(x => $"• {x.FoodName} (SL: {x.Quantity})"));
-                        MessageBox.Show($"⚠️ THÔNG BÁO CHO THU NGÂN:\nCác món sau đây đang được Bếp chế biến:\n{itemsStr}\n\nThu ngân vui lòng báo khách món đang chế biến và hỗ trợ đóng gói mang về (Takeout)!", 
-                            "Món ăn đang chế biến", MessageBoxButton.OK, MessageBoxImage.Information);
-                    }
+                var (finalTotal, inProgressItems) = orderDetailService.ProcessOrderCheckout(currentOrder.OrderId);
 
-                    currentOrder.TotalPrice = finalTotal;
-                    currentOrder.Status = 1;
-                    currentOrder.CheckoutDate = DateTime.Now;
-
-                    orderService.UpdateOrder(currentOrder);
-                    ingoutTableService.UpdateStatus(currentTable.TableId, 0);
-
-                    MessageBox.Show($"Thanh toán thành công!\nTổng tiền: {finalTotal:N0} VNĐ", "Thông báo", MessageBoxButton.OK, MessageBoxImage.Information);
+                PaymentWindow paymentWindow = new PaymentWindow(currentOrder, currentTable, finalTotal, inProgressItems);
+                if (paymentWindow.ShowDialog() == true)
+                {
                     this.Close();
+                }
+                else
+                {
+                    LoadOrderDetails();
                 }
             }
             catch (Exception ex)

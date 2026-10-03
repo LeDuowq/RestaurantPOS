@@ -1,4 +1,4 @@
-﻿using BusinessObject;
+using BusinessObject;
 using Services;
 using System;
 using System.Collections.Generic;
@@ -49,7 +49,9 @@ namespace Restaurant
             {
                 OrderWindow orderWindow = new OrderWindow(selectedTable);
                 orderWindow.Owner = this;
+                orderWindow.Loaded += (s, ev) => this.Hide();
                 orderWindow.ShowDialog();
+                this.Show();
                 LoadTables();
             }
         }

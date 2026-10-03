@@ -5,8 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WPF"
         mc:Ignorable="d"
-        Title="OrderWindow" Height="680" Width="1050"
-        WindowStartupLocation="CenterScreen">
+        Title="Gọi Món &amp; Đặt Thực Đơn (Order Food)" Height="680" Width="1050"
+        WindowStartupLocation="CenterScreen" WindowState="Maximized">
     <Grid Background="#F4F6F9" Margin="10">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>

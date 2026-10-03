@@ -29,6 +29,7 @@ namespace Restaurant
             if (user == null) return;
             if (user.Role == 1) // Admin
             {
+                btnBankSetting.Visibility = Visibility.Visible;
                 btnManagerAccount.Visibility = Visibility.Visible;
                 btnFoodItems.Visibility = Visibility.Visible;
                 btnCategories.Visibility = Visibility.Visible;
@@ -39,6 +40,7 @@ namespace Restaurant
             }
             else if (user.Role == 4) // Đầu bếp
             {
+                btnBankSetting.Visibility = Visibility.Collapsed;
                 btnManagerAccount.Visibility = Visibility.Collapsed;
                 btnFoodItems.Visibility = Visibility.Collapsed;
                 btnCategories.Visibility = Visibility.Collapsed;
@@ -49,6 +51,7 @@ namespace Restaurant
             }
             else // Thu ngân (2), Phục vụ (3)
             {
+                btnBankSetting.Visibility = Visibility.Collapsed;
                 btnManagerAccount.Visibility = Visibility.Collapsed;
                 btnFoodItems.Visibility = Visibility.Collapsed;
                 btnCategories.Visibility = Visibility.Collapsed;
@@ -59,68 +62,61 @@ namespace Restaurant
             }
         }
 
+        private void OpenChildWindow(Window window)
+        {
+            window.Owner = this;
+            window.Loaded += (s, e) => this.Hide();
+            window.ShowDialog();
+            this.Show();
+        }
+
         private void btnSales_Click(object sender, RoutedEventArgs e)
         {
-            this.Hide();
-            SaleWindow saleWindow = new SaleWindow();
-            saleWindow.ShowDialog();
-            this.Show();
+            OpenChildWindow(new SaleWindow());
         }
 
         private void btnKitchen_Click(object sender, RoutedEventArgs e)
         {
-            this.Hide();
-            KitchenWindow kitchenWindow = new KitchenWindow();
-            kitchenWindow.ShowDialog();
-            this.Show();
+            OpenChildWindow(new KitchenWindow());
         }
 
         private void btnFoodItems_Click(object sender, RoutedEventArgs e)
         {
-            this.Hide();
-            FoodItemWindow foodWindow = new FoodItemWindow();
-            foodWindow.ShowDialog();
-            this.Show();
+            OpenChildWindow(new FoodItemWindow());
         }
 
         private void btnCategories_Click(object sender, RoutedEventArgs e)
         {
-            this.Hide();
-            CategoryWindow categoryWindow = new CategoryWindow();
-            categoryWindow.ShowDialog();
-            this.Show();
+            OpenChildWindow(new CategoryWindow());
         }
 
         private void btnDiningTables_Click(object sender, RoutedEventArgs e)
         {
-            this.Hide();
-            DiningTableWindow tableWindow = new DiningTableWindow();
-            tableWindow.ShowDialog();
-            this.Show();
+            OpenChildWindow(new DiningTableWindow());
         }
 
         private void btnReports_Click(object sender, RoutedEventArgs e)
         {
-            this.Hide();
-            ReportWindow reportWindow = new ReportWindow();
-            reportWindow.ShowDialog();
-            this.Show();
+            OpenChildWindow(new ReportWindow());
         }
 
         private void btnManagerAccount_Click(object sender, RoutedEventArgs e)
         {
-            this.Hide();
-            ManagerAccountWindow manageWindow = new ManagerAccountWindow();
-            manageWindow.ShowDialog();
-            this.Show();
+            OpenChildWindow(new ManagerAccountWindow());
         }
 
         private void btnProfile_Click(object sender, RoutedEventArgs e)
         {
-            this.Hide();
             ProfileWindow profileWin = new ProfileWindow();
+            profileWin.Owner = this;
             profileWin.ShowDialog();
-            this.Show();
+        }
+
+        private void btnBankSetting_Click(object sender, RoutedEventArgs e)
+        {
+            BankingSettingWindow settingWindow = new BankingSettingWindow();
+            settingWindow.Owner = this;
+            settingWindow.ShowDialog();
         }
 
         private void btnLogout_Click(object sender, RoutedEventArgs e)

@@ -1,0 +1,173 @@
+<Window x:Class="WPF.PaymentWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:WPF"
+        mc:Ignorable="d"
+        Title="Thanh Toán Hóa Đơn &amp; Chuyển Khoản QR" Height="680" Width="880"
+        WindowStartupLocation="CenterScreen" ResizeMode="NoResize" Background="#F4F6F9">
+    <Grid Margin="15">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- HEADER -->
+        <Border Grid.Row="0" Background="#2C3E50" Padding="15,12" CornerRadius="8" Margin="0,0,0,12">
+            <Grid>
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                    <TextBlock Text="💳 THANH TOÁN HÓA ĐƠN -" Foreground="White" FontSize="18" FontWeight="Bold"/>
+                    <TextBlock x:Name="txtHeaderTable" Text=" BÀN 1" Foreground="#F39C12" FontSize="18" FontWeight="Bold" Margin="5,0,0,0"/>
+                </StackPanel>
+                <TextBlock x:Name="txtHeaderOrder" Text="Hóa đơn #1" Foreground="#ECF0F1" FontSize="14" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+            </Grid>
+        </Border>
+
+        <!-- BODY: 2 CỘT -->
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1.1*"/>
+                <ColumnDefinition Width="0.9*"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- CỘT TRÁI: THÔNG TIN HÓA ĐƠN & PHƯƠNG THỨC TIỀN MẶT -->
+            <StackPanel Grid.Column="0" Margin="0,0,10,0">
+                <!-- THÔNG TIN HÓA ĐƠN -->
+                <Border Background="White" BorderBrush="#E0E0E0" BorderThickness="1" CornerRadius="8" Padding="15" Margin="0,0,0,12">
+                    <StackPanel>
+                        <TextBlock Text="📋 CHI TIẾT THANH TOÁN" FontSize="15" FontWeight="Bold" Foreground="#2C3E50" Margin="0,0,0,10"/>
+                        
+                        <Grid Margin="0,4">
+                            <TextBlock Text="Bàn ăn:" Foreground="#7F8C8D" FontSize="14"/>
+                            <TextBlock x:Name="txtTableName" Text="Bàn 1" FontWeight="Bold" FontSize="14" HorizontalAlignment="Right" Foreground="#2C3E50"/>
+                        </Grid>
+                        <Grid Margin="0,4">
+                            <TextBlock Text="Mã hóa đơn:" Foreground="#7F8C8D" FontSize="14"/>
+                            <TextBlock x:Name="txtOrderId" Text="#10" FontWeight="SemiBold" FontSize="14" HorizontalAlignment="Right"/>
+                        </Grid>
+                        <Grid Margin="0,4">
+                            <TextBlock Text="Thu ngân:" Foreground="#7F8C8D" FontSize="14"/>
+                            <TextBlock x:Name="txtStaffName" Text="Admin" FontWeight="SemiBold" FontSize="14" HorizontalAlignment="Right"/>
+                        </Grid>
+                        <Grid Margin="0,4">
+                            <TextBlock Text="Thời gian lập:" Foreground="#7F8C8D" FontSize="14"/>
+                            <TextBlock x:Name="txtOrderTime" Text="12:00 01/01/2026" FontSize="14" HorizontalAlignment="Right"/>
+                        </Grid>
+
+                        <Separator Margin="0,10,0,10" Background="#ECEFF1"/>
+
+                        <!-- TỔNG TIỀN NỔI BẬT -->
+                        <Border Background="#E8F8F5" BorderBrush="#A3E4D7" BorderThickness="1" CornerRadius="6" Padding="12,10">
+                            <Grid>
+                                <TextBlock Text="TỔNG TIỀN:" FontWeight="Bold" FontSize="15" Foreground="#16A085" VerticalAlignment="Center"/>
+                                <TextBlock x:Name="txtTotalAmount" Text="0 VNĐ" FontWeight="Bold" FontSize="22" Foreground="#E74C3C" HorizontalAlignment="Right"/>
+                            </Grid>
+                        </Border>
+                    </StackPanel>
+                </Border>
+
+                <!-- PHƯƠNG THỨC TIỀN MẶT -->
+                <Border Background="White" BorderBrush="#E0E0E0" BorderThickness="1" CornerRadius="8" Padding="15">
+                    <StackPanel>
+                        <TextBlock Text="💵 THANH TOÁN TIỀN MẶT (NẾU CÓ)" FontSize="15" FontWeight="Bold" Foreground="#2C3E50" Margin="0,0,0,10"/>
+                        
+                        <TextBlock Text="Số tiền khách đưa (VNĐ):" FontSize="13" Foreground="#555" Margin="0,0,0,5"/>
+                        <TextBox x:Name="txtCashGiven" Height="36" FontSize="16" FontWeight="Bold" VerticalContentAlignment="Center" 
+                                 Padding="8,0" BorderBrush="#BDC3C7" TextChanged="txtCashGiven_TextChanged"/>
+
+                        <!-- Gợi ý tiền nhanh -->
+                        <StackPanel Orientation="Horizontal" Margin="0,8,0,10">
+                            <Button Content="Đủ tiền" Click="btnQuickCash_Click" Tag="EXACT" Width="65" Height="28" Margin="0,0,5,0" Background="#ECEFF1" BorderThickness="0" FontSize="12"/>
+                            <Button Content="100k" Click="btnQuickCash_Click" Tag="100000" Width="55" Height="28" Margin="0,0,5,0" Background="#ECEFF1" BorderThickness="0" FontSize="12"/>
+                            <Button Content="200k" Click="btnQuickCash_Click" Tag="200000" Width="55" Height="28" Margin="0,0,5,0" Background="#ECEFF1" BorderThickness="0" FontSize="12"/>
+                            <Button Content="500k" Click="btnQuickCash_Click" Tag="500000" Width="55" Height="28" Margin="0,0,5,0" Background="#ECEFF1" BorderThickness="0" FontSize="12"/>
+                            <Button Content="1 triệu" Click="btnQuickCash_Click" Tag="1000000" Width="60" Height="28" Background="#ECEFF1" BorderThickness="0" FontSize="12"/>
+                        </StackPanel>
+
+                        <Grid Margin="0,5">
+                            <TextBlock Text="Tiền thối lại khách:" FontSize="14" FontWeight="SemiBold" Foreground="#555" VerticalAlignment="Center"/>
+                            <TextBlock x:Name="txtChangeAmount" Text="0 VNĐ" FontSize="18" FontWeight="Bold" Foreground="#27AE60" HorizontalAlignment="Right"/>
+                        </Grid>
+                    </StackPanel>
+                </Border>
+            </StackPanel>
+
+            <!-- CỘT PHẢI: MÃ QR CHUYỂN KHOẢN VIETQR -->
+            <Border Grid.Column="1" Background="White" BorderBrush="#E0E0E0" BorderThickness="1" CornerRadius="8" Padding="15" Margin="10,0,0,0">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <StackPanel Grid.Row="0">
+                        <TextBlock Text="📱 CHUYỂN KHOẢN MÃ VIETQR" FontSize="15" FontWeight="Bold" Foreground="#2980B9" Margin="0,0,0,4"/>
+                        <TextBlock Text="Khách quét mã bằng app Ngân hàng / Ví điện tử" FontSize="12" Foreground="#7F8C8D" Margin="0,0,0,8"/>
+                    </StackPanel>
+
+                    <!-- KHUNG ẢNH QR -->
+                    <Border Grid.Row="1" Background="#FAFAFA" BorderBrush="#BDC3C7" BorderThickness="1" CornerRadius="8" Padding="10" VerticalAlignment="Center" HorizontalAlignment="Center">
+                        <Grid>
+                            <!-- Text thông báo khi đang tải -->
+                            <TextBlock x:Name="txtQrLoading" Text="Đang tải mã VietQR..." VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="#95A5A6" FontSize="14"/>
+                            <!-- Ảnh VietQR -->
+                            <Image x:Name="imgQrCode" Width="260" Height="260" Stretch="Uniform" RenderOptions.BitmapScalingMode="HighQuality"/>
+                        </Grid>
+                    </Border>
+
+                    <!-- THÔNG TIN TÀI KHOẢN -->
+                    <StackPanel Grid.Row="2" Margin="0,10,0,0">
+                        <Grid Margin="0,2">
+                            <TextBlock Text="Ngân hàng:" FontSize="12" Foreground="#7F8C8D"/>
+                            <TextBlock x:Name="txtBankName" Text="MB Bank" FontSize="12" FontWeight="SemiBold" HorizontalAlignment="Right"/>
+                        </Grid>
+                        <Grid Margin="0,2">
+                            <TextBlock Text="Số tài khoản:" FontSize="12" Foreground="#7F8C8D"/>
+                            <TextBlock x:Name="txtAccountNumber" Text="0345678999" FontSize="13" FontWeight="Bold" Foreground="#2C3E50" HorizontalAlignment="Right"/>
+                        </Grid>
+                        <Grid Margin="0,2">
+                            <TextBlock Text="Chủ tài khoản:" FontSize="12" Foreground="#7F8C8D"/>
+                            <TextBlock x:Name="txtAccountName" Text="NHA HANG RESTAURANT" FontSize="12" FontWeight="Bold" Foreground="#16A085" HorizontalAlignment="Right"/>
+                        </Grid>
+                        <Grid Margin="0,2">
+                            <TextBlock Text="Nội dung CK:" FontSize="12" Foreground="#7F8C8D"/>
+                            <TextBlock x:Name="txtTransferContent" Text="Thanh toan Ban 1" FontSize="12" FontWeight="Bold" Foreground="#E67E22" HorizontalAlignment="Right"/>
+                        </Grid>
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,8,0,0">
+                            <Button x:Name="btnReloadQr" Content="🔄 Tải lại mã QR" Height="28" Width="115" Margin="0,0,8,0" 
+                                    Background="#EBF5FB" Foreground="#2980B9" BorderBrush="#AED6F1" BorderThickness="1" FontSize="12" Click="btnReloadQr_Click"/>
+                            <Button x:Name="btnConfigBank" Content="⚙️ Đổi tài khoản" Height="28" Width="115" 
+                                    Background="#F4ECF7" Foreground="#8E44AD" BorderBrush="#D2B4DE" BorderThickness="1" FontSize="12" Click="btnConfigBank_Click"/>
+                        </StackPanel>
+                    </StackPanel>
+                </Grid>
+            </Border>
+        </Grid>
+
+        <!-- FOOTER: NÚT XÁC NHẬN / HỦY -->
+        <Border Grid.Row="2" Background="White" BorderBrush="#E0E0E0" BorderThickness="1" CornerRadius="8" Padding="15,10" Margin="0,12,0,0">
+            <Grid>
+                <Button x:Name="btnCancel" Content="⬅ Quay lại" Width="120" Height="42" HorizontalAlignment="Left"
+                        Background="#95A5A6" Foreground="White" FontWeight="Bold" FontSize="14" BorderThickness="0" Click="btnCancel_Click">
+                    <Button.Resources>
+                        <Style TargetType="Border">
+                            <Setter Property="CornerRadius" Value="6"/>
+                        </Style>
+                    </Button.Resources>
+                </Button>
+
+                <Button x:Name="btnConfirmPayment" Content="✅ XÁC NHẬN ĐÃ THANH TOÁN" Width="280" Height="42" HorizontalAlignment="Right"
+                        Background="#27AE60" Foreground="White" FontWeight="Bold" FontSize="15" BorderThickness="0" Click="btnConfirmPayment_Click">
+                    <Button.Resources>
+                        <Style TargetType="Border">
+                            <Setter Property="CornerRadius" Value="6"/>
+                        </Style>
+                    </Button.Resources>
+                </Button>
+            </Grid>
+        </Border>
+    </Grid>
+</Window>

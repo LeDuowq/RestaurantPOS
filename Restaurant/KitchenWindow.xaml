@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:Restaurant"
         mc:Ignorable="d"
         Title="Màn Hình Nhà Bếp (Kitchen Manager)" Height="650" Width="1050"
-        WindowStartupLocation="CenterScreen">
+        WindowStartupLocation="CenterScreen" WindowState="Maximized">
     <Grid Background="#F4F6F9" Margin="10">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>

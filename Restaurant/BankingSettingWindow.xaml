@@ -1,0 +1,118 @@
+<Window x:Class="WPF.BankingSettingWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:WPF"
+        mc:Ignorable="d"
+        Title="Cài Đặt Tài Khoản Ngân Hàng Nhận Tiền (VietQR)" Height="550" Width="820"
+        WindowStartupLocation="CenterScreen" ResizeMode="NoResize" Background="#F4F6F9">
+    <Grid Margin="15">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- HEADER -->
+        <Border Grid.Row="0" Background="#2C3E50" Padding="15,12" CornerRadius="8" Margin="0,0,0,15">
+            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                <TextBlock Text="⚙️ CẤU HÌNH TÀI KHOẢN NGÂN HÀNG THỤ HƯỞNG (VIETQR)" Foreground="White" FontSize="17" FontWeight="Bold"/>
+            </StackPanel>
+        </Border>
+
+        <!-- BODY: 2 CỘT -->
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1.2*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- CỘT TRÁI: FORM NHẬP -->
+            <Border Grid.Column="0" Background="White" BorderBrush="#E0E0E0" BorderThickness="1" CornerRadius="8" Padding="18" Margin="0,0,10,0">
+                <StackPanel>
+                    <TextBlock Text="📝 THÔNG TIN TÀI KHOẢN NHÀ HÀNG" FontSize="15" FontWeight="Bold" Foreground="#2C3E50" Margin="0,0,0,12"/>
+
+                    <!-- NGÂN HÀNG -->
+                    <TextBlock Text="Ngân Hàng Thụ Hưởng (*):" FontSize="13" FontWeight="SemiBold" Foreground="#333" Margin="0,0,0,4"/>
+                    <ComboBox x:Name="cboBank" Height="36" FontSize="13" VerticalContentAlignment="Center" 
+                              DisplayMemberPath="BankName" SelectedValuePath="BankId" Margin="0,0,0,12"
+                              SelectionChanged="cboBank_SelectionChanged"/>
+
+                    <!-- SỐ TÀI KHOẢN -->
+                    <TextBlock Text="Số Tài Khoản (*):" FontSize="13" FontWeight="SemiBold" Foreground="#333" Margin="0,0,0,4"/>
+                    <TextBox x:Name="txtAccountNumber" Height="36" FontSize="15" FontWeight="Bold" VerticalContentAlignment="Center" 
+                             Padding="8,0" BorderBrush="#BDC3C7" Margin="0,0,0,12" TextChanged="txtAccountNumber_TextChanged"/>
+
+                    <!-- TÊN CHỦ TÀI KHOẢN -->
+                    <TextBlock Text="Tên Chủ Tài Khoản (Không dấu) (*):" FontSize="13" FontWeight="SemiBold" Foreground="#333" Margin="0,0,0,4"/>
+                    <TextBox x:Name="txtAccountName" Height="36" FontSize="14" FontWeight="Bold" VerticalContentAlignment="Center" 
+                             Padding="8,0" BorderBrush="#BDC3C7" Margin="0,0,0,12" TextChanged="txtAccountName_TextChanged"/>
+
+                    <!-- GIAO DIỆN MÃ QR -->
+                    <TextBlock Text="Kiểu Giao Diện Mã QR:" FontSize="13" FontWeight="SemiBold" Foreground="#333" Margin="0,0,0,4"/>
+                    <ComboBox x:Name="cboTemplate" Height="34" FontSize="13" VerticalContentAlignment="Center" Margin="0,0,0,15"
+                              SelectionChanged="cboTemplate_SelectionChanged">
+                        <ComboBoxItem Content="compact2 (Đẹp &amp; Đầy đủ logo, tên, số tiền - Khuyên dùng)" Tag="compact2" IsSelected="True"/>
+                        <ComboBoxItem Content="compact (Gọn nhẹ kèm logo ngân hàng)" Tag="compact"/>
+                        <ComboBoxItem Content="qr_only (Chỉ mã QR thuần)" Tag="qr_only"/>
+                    </ComboBox>
+
+                    <Button x:Name="btnPreviewQr" Content="👁️ Cập Nhật Xem Trước Mã QR" Height="34" 
+                            Background="#EBF5FB" Foreground="#2980B9" BorderBrush="#AED6F1" BorderThickness="1" 
+                            FontWeight="Bold" FontSize="13" Click="btnPreviewQr_Click"/>
+                </StackPanel>
+            </Border>
+
+            <!-- CỘT PHẢI: XEM TRƯỚC MÃ QR -->
+            <Border Grid.Column="1" Background="White" BorderBrush="#E0E0E0" BorderThickness="1" CornerRadius="8" Padding="15" Margin="5,0,0,0">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <TextBlock Grid.Row="0" Text="📱 BẢN XEM TRƯỚC MÃ QR" FontSize="14" FontWeight="Bold" Foreground="#2980B9" Margin="0,0,0,8" HorizontalAlignment="Center"/>
+
+                    <!-- KHUNG ẢNH QR -->
+                    <Border Grid.Row="1" Background="#FAFAFA" BorderBrush="#E0E0E0" BorderThickness="1" CornerRadius="8" Padding="8" VerticalAlignment="Center" HorizontalAlignment="Center">
+                        <Grid>
+                            <TextBlock x:Name="txtPreviewLoading" Text="Đang tạo mã QR..." VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="#95A5A6" FontSize="13"/>
+                            <Image x:Name="imgPreviewQr" Width="210" Height="210" Stretch="Uniform" RenderOptions.BitmapScalingMode="HighQuality"/>
+                        </Grid>
+                    </Border>
+
+                    <!-- HƯỚNG DẪN KIỂM TRA -->
+                    <Border Grid.Row="2" Background="#FFFDE7" BorderBrush="#FFF59D" BorderThickness="1" CornerRadius="6" Padding="10" Margin="0,8,0,0">
+                        <TextBlock Text="💡 Quét thử mã QR bằng ứng dụng ngân hàng bất kỳ để đảm bảo hiển thị đúng tên người nhận trước khi lưu." 
+                                   TextWrapping="Wrap" FontSize="11" Foreground="#7D6608" LineHeight="16"/>
+                    </Border>
+                </Grid>
+            </Border>
+        </Grid>
+
+        <!-- FOOTER: NÚT LƯU & ĐÓNG -->
+        <Border Grid.Row="2" Background="White" BorderBrush="#E0E0E0" BorderThickness="1" CornerRadius="8" Padding="15,10" Margin="0,12,0,0">
+            <Grid>
+                <Button x:Name="btnCancel" Content="❌ Đóng" Width="110" Height="40" HorizontalAlignment="Left"
+                        Background="#95A5A6" Foreground="White" FontWeight="Bold" FontSize="14" BorderThickness="0" Click="btnCancel_Click">
+                    <Button.Resources>
+                        <Style TargetType="Border">
+                            <Setter Property="CornerRadius" Value="6"/>
+                        </Style>
+                    </Button.Resources>
+                </Button>
+
+                <Button x:Name="btnSave" Content="💾 LƯU CẤU HÌNH NGÂN HÀNG" Width="260" Height="40" HorizontalAlignment="Right"
+                        Background="#27AE60" Foreground="White" FontWeight="Bold" FontSize="14" BorderThickness="0" Click="btnSave_Click">
+                    <Button.Resources>
+                        <Style TargetType="Border">
+                            <Setter Property="CornerRadius" Value="6"/>
+                        </Style>
+                    </Button.Resources>
+                </Button>
+            </Grid>
+        </Border>
+    </Grid>
+</Window>

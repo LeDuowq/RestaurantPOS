@@ -97,19 +97,7 @@ namespace DataAccessLayer
             using var db = new RestaurantPosContext();
             var details = db.OrderDetails.Where(od => od.OrderId == orderId).ToList();
 
-            // 1. Món Status == 0 (Chờ chế biến): Hủy món, hoàn lại số lượng tồn kho
-            var unservedDetails = details.Where(od => od.Status == 0).ToList();
-            foreach (var unserved in unservedDetails)
-            {
-                var food = db.FoodItems.FirstOrDefault(f => f.FoodId == unserved.FoodId);
-                if (food != null)
-                {
-                    food.Quantity += unserved.Quantity; // Hoàn lại kho
-                }
-                db.OrderDetails.Remove(unserved);
-            }
-
-            // 2. Món Status == 1 (Đang chế biến): Nhặt ra danh sách để báo thu ngân nhắc khách gói mang về
+            // 1. Món Status == 1 (Đang chế biến): Nhặt ra danh sách để báo thu ngân nhắc khách gói mang về
             var inProgressDetails = details.Where(od => od.Status == 1).ToList();
             var inProgressList = inProgressDetails.Select(od => new OrderDetailDTO
             {
@@ -122,11 +110,9 @@ namespace DataAccessLayer
                 Status = od.Status
             }).ToList();
 
-            // 3. Tính tổng tiền cho các món Status >= 1 (Đang chế biến hoặc Hoàn thành)
-            var billedDetails = details.Where(od => od.Status >= 1).ToList();
-            decimal finalTotal = billedDetails.Sum(od => od.Quantity * od.UnitPrice);
+            // 2. Tính tổng tiền cho TẤT CẢ các món mà khách đã gọi (Status 0, 1, 2)
+            decimal finalTotal = details.Sum(od => od.Quantity * od.UnitPrice);
 
-            db.SaveChanges();
             return (finalTotal, inProgressList);
         }
     }
